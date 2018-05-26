@@ -1,0 +1,54 @@
+{
+  "name": "selective-disclosure",
+  "version": "0.0.1",
+  "author": "Jakub Wojciechowski",
+  "description": "Selective disclosure smart contracts protocol for sensitive data",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alice-si/selective-disclosure.git"
+  },
+  "scripts": {
+    "test": "scripts/test.sh",
+    "console": "truffle console",
+    "coverage": "scripts/coverage.sh",
+    "coveralls": "scripts/coveralls.sh",
+    "build": "webpack",
+    "dev": "webpack-dev-server"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alice-si/selective-disclosure/issues"
+  },
+  "homepage": "https://github.com/alice-si/selective-disclosure",
+  "devDependencies": {
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-preset-stage-3": "^6.17.0",
+    "babel-register": "^6.23.0",
+    "chai": "^4.0.2",
+    "chai-as-promised": "^7.0.0",
+    "chai-bignumber": "^2.0.0",
+    "coveralls": "^2.13.1",
+    "dotenv": "^4.0.0",
+    "eslint": "^4.11.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "ethereumjs-util": "^5.1.2",
+    "ethjs-abi": "^0.2.1",
+    "ganache-cli": "6.1.0",
+    "openzeppelin-solidity": "^1.9.0",
+    "solidity-coverage": "^0.5.0",
+    "solium": "^1.1.7",
+    "truffle": "^4.1.8",
+    "truffle-hdwallet-provider": "0.0.3",
+    "webpack": "^2.7.0",
+    "webpack-dev-server": "^2.9.3",
+    "copy-webpack-plugin": "^4.5.1",
+    "css-loader": "^0.28.11",
+    "style-loader": "^0.21.0"
+  }
+}

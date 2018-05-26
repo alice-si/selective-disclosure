@@ -1,0 +1,15 @@
+
+.alice {
+    background-color: #1998a2;
+}
+
+:focus {
+    outline: -webkit-focus-ring-color auto 0px;
+}
+
+h3.header {
+    color: #1998a2;
+    font-size: 2.92rem;
+    line-height: 110%;
+    font-weight: 300;
+}
