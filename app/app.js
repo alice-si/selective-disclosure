@@ -38,9 +38,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
 window.addDirectoryElement = function(parentId, title, body) {
 	var parent = $('#' + parentId);
-	var elem = $('<li><div class="collapsible-header">'
+	var elem = $('<li><div class="collapsible-header"><i class="material-icons">description</i>'
            + title + '</div><div class="collapsible-body"><p>'
            + body + '</p></div></li>');
+	parent.append(elem);
+	rebuildCollapsible();
+};
+
+window.addDirectoryFolder = function(parentId, title, id) {
+	var parent = $('#' + parentId);
+	var elem = $('<li><div class="collapsible-header"><i class="material-icons">folder_item</i>'
+	         + title + '</div><div class="collapsible-body"><div class="row"><div class="col s12 m12">'
+					 + '<ul id="' + id + '" class="collapsible" data-collapsible="accordion">');
 	parent.append(elem);
 	rebuildCollapsible();
 };
