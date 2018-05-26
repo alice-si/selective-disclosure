@@ -26,3 +26,23 @@ window.onload = function() {
 
 
 };
+
+var rebuildCollapsible = function() {
+	var elems = document.querySelectorAll('.collapsible');
+	var instances = M.Collapsible.init(elems);
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+  rebuildCollapsible();
+});
+
+window.addDirectoryElement = function(parentId, title, body) {
+	var parent = $('#' + parentId);
+	var elem = $('<li><div class="collapsible-header">'
+           + title + '</div><div class="collapsible-body"><p>'
+           + body + '</p></div></li>');
+	parent.append(elem);
+	rebuildCollapsible();
+};
+
+
