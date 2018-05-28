@@ -81,12 +81,28 @@ window.addDirectoryElement = function(parentId, title, body) {
 };
 
 window.addDirectoryFolder = function(parentId, title, id) {
+	var defaultIcons = {
+		'Validations' : 'check_circle',
+		'Donations' : 'money',
+		'Outcomes' : 'thumb_up'
+	};
+
 	var parent = $('#' + parentId);
-	var elem = $('<li><div class="collapsible-header"><i class="material-icons">folder_item</i>'
+	var elem = $('<li><div class="collapsible-header"><i class="material-icons">' + (defaultIcons[title] || 'folder_item') + '</i>'
 	         + title + '</div><div class="collapsible-body"><div class="row"><div class="col s12 m12">'
 					 + '<ul id="' + id + '" class="collapsible" data-collapsible="accordion">');
 	parent.append(elem);
 	rebuildCollapsible();
 };
+
+window.drawDataDirectory = function() {
+	addDirectoryFolder("root", "Validations", "a1");
+	addDirectoryFolder("a1", "St. Mungos", "b1");
+	addDirectoryFolder("a1", "Fusion Housing", "b2");
+	addDirectoryFolder("root", "Donations", "a2");
+	addDirectoryFolder("root", "Outcomes", "a3");
+};
+
+window.drawDataDirectory();
 
 
