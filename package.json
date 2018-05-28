@@ -29,7 +29,9 @@
     "chai": "^4.0.2",
     "chai-as-promised": "^7.0.0",
     "chai-bignumber": "^2.0.0",
+    "copy-webpack-plugin": "^4.5.1",
     "coveralls": "^2.13.1",
+    "css-loader": "^0.28.11",
     "dotenv": "^4.0.0",
     "eslint": "^4.11.0",
     "eslint-config-standard": "^10.2.1",
@@ -43,12 +45,13 @@
     "openzeppelin-solidity": "^1.9.0",
     "solidity-coverage": "^0.5.0",
     "solium": "^1.1.7",
-    "truffle": "^4.1.8",
+    "style-loader": "^0.21.0",
+    "truffle": "^4.1.11",
     "truffle-hdwallet-provider": "0.0.3",
     "webpack": "^2.7.0",
-    "webpack-dev-server": "^2.9.3",
-    "copy-webpack-plugin": "^4.5.1",
-    "css-loader": "^0.28.11",
-    "style-loader": "^0.21.0"
+    "webpack-dev-server": "^2.9.3"
+  },
+  "dependencies": {
+    "truffle-contract": "^3.0.5"
   }
 }

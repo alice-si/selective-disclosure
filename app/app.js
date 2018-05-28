@@ -1,9 +1,42 @@
 // Import the page's CSS. Webpack will know what to do with it.
 import "./stylesheets/app.css";
 
+// Import libraries we need.
+import { default as Web3} from 'web3';
+import { default as contract } from 'truffle-contract'
+
+// Import our contract artifacts and turn them into usable abstractions.
+import dataDirectory_artifacts from '../build/contracts/DataDirectory.json';
+
+// Create contract object
+var DataDirectory = contract(dataDirectory_artifacts);
+
+// Contract instance
+var dataDirectory;
+
+
+//Accounts
+var mainAccount;
+
+
+async function deployDataDirectory() {
+	DataDirectory.setProvider(web3.currentProvider);
+
+	dataDirectory = await DataDirectory.new({from: mainAccount, gas: 2000000});
+	console.log(dataDirectory);
+}
+
+
+
+async function deploy() {
+	await deployDataDirectory();
+}
+
 window.onload = function() {
 
 	window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+
 
 
 	web3.eth.getAccounts(function(err, accs) {
@@ -17,9 +50,11 @@ window.onload = function() {
         return;
       }
 
-      //mapAccounts(accs);
+      console.log(accs);
 
-      //deploy();
+      mainAccount = accs[0];
+
+      deploy();
 
 
     });
