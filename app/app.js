@@ -20,16 +20,40 @@ var mainAccount;
 
 
 async function deployDataDirectory() {
-	DataDirectory.setProvider(web3.currentProvider);
-
+	console.log("Deploying data directory");
 	dataDirectory = await DataDirectory.new({from: mainAccount, gas: 2000000});
-	console.log(dataDirectory);
+	localStorage.setItem('dataDirectoryAddress', dataDirectory.address);
+	await dataDirectory.addElement("root", "Validations", {from: mainAccount, gas: 2000000});
+	await dataDirectory.addElement("root", "Donations", {from: mainAccount, gas: 2000000});
+	await dataDirectory.addElement("root", "Outcomes", {from: mainAccount, gas: 2000000});
+
+
+}
+
+
+async function fetchDataDirectory(node) {
+	var rootChildCount = await dataDirectory.getChildrenCount(node);
+	console.log(node + " children: " + rootChildCount.valueOf());
+	for(var i=0; i<rootChildCount.valueOf(); i++) {
+		var childName = await dataDirectory.getChildNameAt(node, i);
+		addDirectoryFolder("root", childName, node + '_' + i);
+		fetchDataDirectory(childName);
+	}
+	//await dataDirectory.addElement("root", "Donations", {from: mainAccount, gas: 2000000});
+	//await dataDirectory.addElement("root", "Outcomes", {from: mainAccount, gas: 2000000});
 }
 
 
 
-async function deploy() {
-	await deployDataDirectory();
+async function getDataDirectory() {
+	DataDirectory.setProvider(web3.currentProvider);
+	var address = localStorage.getItem('dataDirectoryAddress');
+	if (address) {
+		dataDirectory = await DataDirectory.at(address);
+	} else {
+		await deployDataDirectory();
+	}
+	await fetchDataDirectory("root");
 }
 
 window.onload = function() {
@@ -54,7 +78,7 @@ window.onload = function() {
 
       mainAccount = accs[0];
 
-      deploy();
+      getDataDirectory();
 
 
     });
@@ -103,6 +127,6 @@ window.drawDataDirectory = function() {
 	addDirectoryFolder("root", "Outcomes", "a3");
 };
 
-window.drawDataDirectory();
+//window.drawDataDirectory();
 
 
