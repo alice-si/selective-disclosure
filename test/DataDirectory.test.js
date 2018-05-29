@@ -21,26 +21,32 @@ contract('Data Directory', function([owner]) {
 
 
 	it("should add first root child", async function() {
-		await dataDirectory.addElement("root", "Validations");
+		await dataDirectory.addElement("root", "Validations", true);
 
 		(await dataDirectory.getChildrenCount("root")).should.be.bignumber.equal(1);
-		(await dataDirectory.getChildNameAt("root", 0)).should.be.equal("Validations");
+		var childId = await dataDirectory.getChildIdAt("root", 0);
+		(await dataDirectory.getFullName(childId)).should.be.equal("Validations");
+		(await dataDirectory.isFolder(childId)).should.be.equal(true);
 	});
 
 
 	it("should add second root child", async function() {
-		await dataDirectory.addElement("root", "Donations");
+		await dataDirectory.addElement("root", "Donations", true);
 
 		(await dataDirectory.getChildrenCount("root")).should.be.bignumber.equal(2);
-		(await dataDirectory.getChildNameAt("root", 1)).should.be.equal("Donations");
+		var childId = await dataDirectory.getChildIdAt("root", 1);
+		(await dataDirectory.getFullName(childId)).should.be.equal("Donations");
+		(await dataDirectory.isFolder(childId)).should.be.equal(true);
 	});
 
 
-	it("should add third root child", async function() {
-		await dataDirectory.addElement("root", "Outcomes");
+	it("should add second root child", async function() {
+		await dataDirectory.addElement("root", "Outcomes", true);
 
 		(await dataDirectory.getChildrenCount("root")).should.be.bignumber.equal(3);
-		(await dataDirectory.getChildNameAt("root", 2)).should.be.equal("Outcomes");
+		var childId = await dataDirectory.getChildIdAt("root", 2);
+		(await dataDirectory.getFullName(childId)).should.be.equal("Outcomes");
+		(await dataDirectory.isFolder(childId)).should.be.equal(true);
 	});
 
 });

@@ -23,24 +23,29 @@ async function deployDataDirectory() {
 	console.log("Deploying data directory");
 	dataDirectory = await DataDirectory.new({from: mainAccount, gas: 2000000});
 	localStorage.setItem('dataDirectoryAddress', dataDirectory.address);
-	await dataDirectory.addElement("root", "Validations", {from: mainAccount, gas: 2000000});
-	await dataDirectory.addElement("root", "Donations", {from: mainAccount, gas: 2000000});
-	await dataDirectory.addElement("root", "Outcomes", {from: mainAccount, gas: 2000000});
+	await dataDirectory.addElement("root", "Validations", true, {from: mainAccount, gas: 2000000});
+	await dataDirectory.addElement("root", "Donations", true, {from: mainAccount, gas: 2000000});
+	await dataDirectory.addElement("root", "Outcomes", true, {from: mainAccount, gas: 2000000});
+
+	var donationsId = await dataDirectory.getElementId("root", "Validations");
+
+	await dataDirectory.addElement(donationsId, "St. Mungos", true, {from: mainAccount, gas: 2000000});
+	await dataDirectory.addElement(donationsId, "Fusion Housing", true, {from: mainAccount, gas: 2000000});
 
 
 }
 
 
-async function fetchDataDirectory(node) {
-	var rootChildCount = await dataDirectory.getChildrenCount(node);
-	console.log(node + " children: " + rootChildCount.valueOf());
-	for(var i=0; i<rootChildCount.valueOf(); i++) {
-		var childName = await dataDirectory.getChildNameAt(node, i);
-		addDirectoryFolder("root", childName, node + '_' + i);
-		fetchDataDirectory(childName);
+async function fetchDataDirectory(elementId, parentId) {
+	if (parentId) {
+		var fullName = await dataDirectory.getFullName(elementId);
+		addDirectoryFolder(parentId, fullName, elementId);
 	}
-	//await dataDirectory.addElement("root", "Donations", {from: mainAccount, gas: 2000000});
-	//await dataDirectory.addElement("root", "Outcomes", {from: mainAccount, gas: 2000000});
+	var childCount = await dataDirectory.getChildrenCount(elementId);
+	for(var i=0; i<childCount.valueOf(); i++) {
+		var childId = await dataDirectory.getChildIdAt(elementId, i);
+		fetchDataDirectory(childId, elementId);
+	}
 }
 
 
@@ -127,6 +132,8 @@ window.drawDataDirectory = function() {
 	addDirectoryFolder("root", "Outcomes", "a3");
 };
 
-//window.drawDataDirectory();
+window.redeploy = function() {
+	deployDataDirectory();
+};
 
 
