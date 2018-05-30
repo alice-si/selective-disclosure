@@ -18,6 +18,8 @@ var dataDirectory;
 //Accounts
 var mainAccount;
 
+var events;
+
 
 async function deployDataDirectory() {
 	console.log("Deploying data directory");
@@ -64,6 +66,19 @@ async function getDataDirectory() {
 		await deployDataDirectory();
 	}
 	await fetchDataDirectory("root");
+
+	listenToEvents();
+}
+
+function listenToEvents() {
+	//Listen to events
+	window.dd = dataDirectory;
+	var addedElementEvent = dataDirectory.AddedElement();
+
+	addedElementEvent.watch(function(error, result){
+		var event = {block: result.blockHash, tx: result.transactionHash, desc: "A new element " + result.args.fullName + " has been added to the node " + result.args.parentId + " by the user " + result.args.user + "]"};
+		console.log(event);
+	});
 }
 
 window.onload = function() {
@@ -87,11 +102,9 @@ window.onload = function() {
       console.log(accs);
 
       mainAccount = accs[0];
-
-      getDataDirectory();
     });
 
-
+	getDataDirectory();
 
 
 };

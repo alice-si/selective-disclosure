@@ -4,6 +4,8 @@ import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
 contract DataDirectory is Ownable {
 
+    event AddedElement(address user, bytes32 parentId, string fullName);
+
     struct Element {
         bytes32 parentId;
         bytes reference;
@@ -31,6 +33,7 @@ contract DataDirectory is Ownable {
         elements[id].fullName = fullName;
         elements[id].isFolder = isFolder;
         elements[parentId].children.push(id);
+        emit AddedElement(msg.sender, parentId, fullName);
     }
 
     function getChildrenCount(bytes32 elementId) public view returns(uint256) {
