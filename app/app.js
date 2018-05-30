@@ -31,9 +31,14 @@ async function deployDataDirectory() {
 
 	await dataDirectory.addElement(donationsId, "St. Mungos", true, {from: mainAccount, gas: 2000000});
 	await dataDirectory.addElement(donationsId, "Fusion Housing", true, {from: mainAccount, gas: 2000000});
-
-
 }
+
+async function addElement(parentId, fullName) {
+	console.log("Adding: " + fullName + " to parent: " + parentId);
+	await dataDirectory.addElement(parentId, fullName, true, {from: mainAccount, gas: 2000000});
+	var elementId = await dataDirectory.getElementId(parentId, fullName);
+	addDirectoryFolder(parentId, fullName, elementId);
+};
 
 
 async function fetchDataDirectory(elementId, parentId) {
@@ -84,9 +89,9 @@ window.onload = function() {
       mainAccount = accs[0];
 
       getDataDirectory();
-
-
     });
+
+
 
 
 };
@@ -119,7 +124,10 @@ window.addDirectoryFolder = function(parentId, title, id) {
 	var parent = $('#' + parentId);
 	var elem = $('<li><div class="collapsible-header"><i class="material-icons">' + (defaultIcons[title] || 'folder_item') + '</i>'
 	         + title + '</div><div class="collapsible-body"><div class="row"><div class="col s12 m12">'
-					 + '<ul id="' + id + '" class="collapsible" data-collapsible="accordion">');
+					 + '<ul id="' + id + '" class="collapsible" data-collapsible="accordion"></ul>'
+					 + '<div class="input-field col s6" style="margin:0;"><input id="input_' + id +'" type="text" class="validate" style="height: 2.5rem;"><label for="name">Name</label></div>'
+		       + '<a class="waves-effect waves-light btn" onclick="addElement(&apos;' + id +'&apos;)"><i class="material-icons right">add_circle</i>add</a>'
+		       + '</div></div>');
 	parent.append(elem);
 	rebuildCollapsible();
 };
@@ -135,5 +143,14 @@ window.drawDataDirectory = function() {
 window.redeploy = function() {
 	deployDataDirectory();
 };
+
+window.addElement = function(parentId) {
+	var elem = $("#input_" + parentId);
+	var fullName = elem.val();
+	$("#input_" + parentId)
+	console.log(fullName);
+
+	addElement(parentId, fullName);
+}
 
 

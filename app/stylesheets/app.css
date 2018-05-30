@@ -13,3 +13,11 @@ h3.header {
     line-height: 110%;
     font-weight: 300;
 }
+
+input[type="text"] + label {
+    pointer-events: none;
+
+* {
+    pointer-events: all;
+}
+}
