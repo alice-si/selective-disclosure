@@ -40,6 +40,7 @@ async function addElement(parentId, fullName) {
 	await dataDirectory.addElement(parentId, fullName, true, {from: mainAccount, gas: 2000000});
 	var elementId = await dataDirectory.getElementId(parentId, fullName);
 	addDirectoryFolder(parentId, fullName, elementId);
+	listenToEvents();
 };
 
 
@@ -73,11 +74,18 @@ async function getDataDirectory() {
 function listenToEvents() {
 	//Listen to events
 	window.dd = dataDirectory;
-	var addedElementEvent = dataDirectory.AddedElement();
 
-	addedElementEvent.watch(function(error, result){
-		var event = {block: result.blockHash, tx: result.transactionHash, desc: "A new element " + result.args.fullName + " has been added to the node " + result.args.parentId + " by the user " + result.args.user + "]"};
-		console.log(event);
+	dataDirectory.AddedElement({}, {fromBlock:1, toBlock:'latest'}).get(function(error, results) {
+		results.forEach(function(result) {
+
+			console.log(result);
+			var event = {
+				block: result.blockNumber,
+				tx: result.transactionHash,
+				desc: "A new element " + result.args.fullName + " has been added to the node " + result.args.parentId + " by the user " + result.args.user + "]"
+			};
+			displayEvent(event);
+		});
 	});
 }
 
@@ -144,6 +152,13 @@ window.addDirectoryFolder = function(parentId, title, id) {
 	parent.append(elem);
 	rebuildCollapsible();
 };
+
+function displayEvent(event) {
+	console.log("Displaying: " + event);
+	var shortTx = event.tx.substr(0, 20) + '...';
+	var elem = $('<tr><td>' + event.block + '</td><td>' + shortTx + '</td><td>' + event.desc + '</td></tr>');
+	$('#logs-table').prepend(elem);
+}
 
 window.drawDataDirectory = function() {
 	addDirectoryFolder("root", "Validations", "a1");
