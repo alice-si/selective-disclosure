@@ -7,12 +7,15 @@ import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
 import dataDirectory_artifacts from '../build/contracts/DataDirectory.json';
+import usersDirectory_artifacts from '../build/contracts/UsersDirectory.json';
 
 // Create contract object
 var DataDirectory = contract(dataDirectory_artifacts);
+var UsersDirectory = contract(usersDirectory_artifacts);
 
 // Contract instance
 var dataDirectory;
+var usersDirectory;
 
 
 //Accounts
@@ -35,24 +38,38 @@ async function deployDataDirectory() {
 	await dataDirectory.addElement(donationsId, "Fusion Housing", true, {from: mainAccount, gas: 2000000});
 }
 
-async function addElement(parentId, fullName) {
+async function deployUsersDirectory() {
+	console.log("Deploying users directory");
+	usersDirectory = await UsersDirectory.new({from: mainAccount, gas: 2000000});
+	localStorage.setItem('usersDirectoryAddress', usersDirectory.address);
+	await usersDirectory.addElement("root-users", "Project Managers", {from: mainAccount, gas: 2000000});
+	await usersDirectory.addElement("root-users", "Judges", {from: mainAccount, gas: 2000000});
+	await usersDirectory.addElement("root-users", "Donors", {from: mainAccount, gas: 2000000});
+
+	//var donationsId = await dataDirectory.getElementId("root", "Validations");
+
+	//await dataDirectory.addElement(donationsId, "St. Mungos", true, {from: mainAccount, gas: 2000000});
+	//await dataDirectory.addElement(donationsId, "Fusion Housing", true, {from: mainAccount, gas: 2000000});
+}
+
+async function addDataElement(parentId, fullName) {
 	console.log("Adding: " + fullName + " to parent: " + parentId);
 	await dataDirectory.addElement(parentId, fullName, true, {from: mainAccount, gas: 2000000});
 	var elementId = await dataDirectory.getElementId(parentId, fullName);
-	addDirectoryFolder(parentId, fullName, elementId);
+	addDataDirectoryFolder(parentId, fullName, elementId);
 	listenToEvents();
 };
 
 
-async function fetchDataDirectory(elementId, parentId) {
+async function fetchDirectory(contract, displayFunc, elementId, parentId) {
 	if (parentId) {
-		var fullName = await dataDirectory.getFullName(elementId);
-		addDirectoryFolder(parentId, fullName, elementId);
+		var fullName = await contract.getFullName(elementId);
+		displayFunc(parentId, fullName, elementId);
 	}
-	var childCount = await dataDirectory.getChildrenCount(elementId);
+	var childCount = await contract.getChildrenCount(elementId);
 	for(var i=0; i<childCount.valueOf(); i++) {
-		var childId = await dataDirectory.getChildIdAt(elementId, i);
-		fetchDataDirectory(childId, elementId);
+		var childId = await contract.getChildIdAt(elementId, i);
+		fetchDirectory(contract, displayFunc, childId, elementId);
 	}
 }
 
@@ -66,9 +83,23 @@ async function getDataDirectory() {
 	} else {
 		await deployDataDirectory();
 	}
-	await fetchDataDirectory("root");
+	await fetchDirectory(dataDirectory, addDataDirectoryFolder, "root");
 
 	listenToEvents();
+}
+
+
+async function getUsersDirectory() {
+	UsersDirectory.setProvider(web3.currentProvider);
+	var address = localStorage.getItem('usersDirectoryAddress');
+	if (address) {
+		usersDirectory = await UsersDirectory.at(address);
+	} else {
+		await deployUsersDirectory();
+	}
+	await fetchDirectory(usersDirectory, addUserDirectoryFolder, "root-users");
+
+	//listenToEvents();
 }
 
 function listenToEvents() {
@@ -78,7 +109,6 @@ function listenToEvents() {
 	dataDirectory.AddedElement({}, {fromBlock:1, toBlock:'latest'}).get(function(error, results) {
 		results.forEach(function(result) {
 
-			console.log(result);
 			var event = {
 				block: result.blockNumber,
 				tx: result.transactionHash,
@@ -107,19 +137,22 @@ window.onload = function() {
         return;
       }
 
-      console.log(accs);
-
       mainAccount = accs[0];
-    });
+		  console.log("Main account: " + mainAccount);
 
-	getDataDirectory();
+			getDataDirectory();
+			getUsersDirectory();
+
+	});
+
+
 
 
 };
 
 var rebuildCollapsible = function() {
 	var elems = document.querySelectorAll('.collapsible');
-	var instances = M.Collapsible.init(elems);
+	M.Collapsible.init(elems);
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -135,7 +168,7 @@ window.addDirectoryElement = function(parentId, title, body) {
 	rebuildCollapsible();
 };
 
-window.addDirectoryFolder = function(parentId, title, id) {
+window.addDataDirectoryFolder = function(parentId, title, id) {
 	var defaultIcons = {
 		'Validations' : 'check_circle',
 		'Donations' : 'money',
@@ -146,9 +179,27 @@ window.addDirectoryFolder = function(parentId, title, id) {
 	var elem = $('<li><div class="collapsible-header"><i class="material-icons">' + (defaultIcons[title] || 'folder_item') + '</i>'
 	         + title + '</div><div class="collapsible-body"><div class="row"><div class="col s12 m12">'
 					 + '<ul id="' + id + '" class="collapsible" data-collapsible="accordion"></ul>'
-					 + '<div class="input-field col s6" style="margin:0;"><input id="input_' + id +'" type="text" class="validate" style="height: 2.5rem;"><label for="name">Name</label></div>'
-		       + '<a class="waves-effect waves-light btn" onclick="addElement(&apos;' + id +'&apos;)"><i class="material-icons right">add_circle</i>add</a>'
+					 + '<div class="input-field col s6" style="margin:0;"><input id="input_' + id +'" type="text" class="validate" style="height: 2.5rem;"><label for="name">Subfolder name</label></div>'
+		       + '<a class="waves-effect waves-light btn" onclick="addElement(&apos;' + id +'&apos;)"><i class="material-icons right">add_circle</i>add folder</a>'
 		       + '</div></div>');
+	parent.append(elem);
+	rebuildCollapsible();
+};
+
+window.addUserDirectoryFolder = function(parentId, title, id) {
+	var defaultIcons = {
+		'Project Managers' : 'work',
+		'Judges' : 'account_balance',
+		'Donors' : 'face'
+	};
+
+	var parent = $('#' + parentId);
+	var elem = $('<li><div class="collapsible-header"><i class="material-icons">' + (defaultIcons[title] || 'folder_item') + '</i>'
+		+ title + '</div><div class="collapsible-body"><div class="row"><div class="col s12 m12">'
+		+ '<ul id="' + id + '" class="collapsible" data-collapsible="accordion"></ul>'
+		+ '<div class="input-field col s6" style="margin:0;"><input id="input_' + id +'" type="text" class="validate" style="height: 2.5rem;"><label for="address">User address</label></div>'
+		+ '<a class="waves-effect waves-light btn" onclick="addUser(&apos;' + id +'&apos;)"><i class="material-icons right">person_add</i>add user</a>'
+		+ '</div></div>');
 	parent.append(elem);
 	rebuildCollapsible();
 };
@@ -170,15 +221,24 @@ window.drawDataDirectory = function() {
 
 window.redeploy = function() {
 	deployDataDirectory();
+	deployUsersDirectory();
 };
 
 window.addElement = function(parentId) {
 	var elem = $("#input_" + parentId);
 	var fullName = elem.val();
-	$("#input_" + parentId)
 	console.log(fullName);
 
-	addElement(parentId, fullName);
-}
+	addDataElement(parentId, fullName);
+};
+
+window.addUser = function(parentId) {
+	var elem = $("#input_" + parentId);
+	var address = elem.val();
+	$("#input_" + parentId)
+	console.log("Adding: " + address + " to: " + parentId);
+
+	addUserElement(parentId, address);
+};
 
 
