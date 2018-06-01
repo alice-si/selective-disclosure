@@ -110,8 +110,6 @@ async function getDataDirectory() {
 		await deployDataDirectory();
 	}
 	await fetchDirectory(dataDirectory, addDataDirectoryFolder, "root");
-
-	listenToEvents();
 }
 
 
@@ -125,7 +123,7 @@ async function getUsersDirectory() {
 	}
 	await fetchUsersDirectory("root-users");
 
-	//listenToEvents();
+	listenToEvents();
 }
 
 function listenToEvents() {
@@ -134,11 +132,23 @@ function listenToEvents() {
 
 	dataDirectory.AddedElement({}, {fromBlock:1, toBlock:'latest'}).get(function(error, results) {
 		results.forEach(function(result) {
-
 			var event = {
 				block: result.blockNumber,
 				tx: result.transactionHash,
-				desc: "A new element " + result.args.fullName + " has been added to the node " + result.args.parentId + " by the user " + result.args.user + "]"
+				desc: "A new element " + result.args.fullName + " has been added to the data node " + result.args.parentId + " by the admin " + result.args.user + "]"
+			};
+			displayEvent(event);
+		});
+	});
+
+	usersDirectory.AddedUser({}, {fromBlock:1, toBlock:'latest'}).get(function(error, results) {
+		console.log("Checking added user");
+		console.log(results);
+		results.forEach(function(result) {
+			var event = {
+				block: result.blockNumber,
+				tx: result.transactionHash,
+				desc: "A user " + result.args.user + " has been added to the folder " + result.args.parentId + " by the admin " + result.args.admin + "]"
 			};
 			displayEvent(event);
 		});
@@ -179,6 +189,9 @@ window.onload = function() {
 var rebuildCollapsible = function() {
 	var elems = document.querySelectorAll('.collapsible');
 	M.Collapsible.init(elems);
+
+	var elems = document.querySelectorAll('select');
+	M.FormSelect.init(elems);
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -202,7 +215,7 @@ window.addDataDirectoryFolder = function(parentId, title, id) {
 	};
 
 	var parent = $('#' + parentId);
-	var elem = $('<li><div class="collapsible-header"><i class="material-icons">' + (defaultIcons[title] || 'folder_item') + '</i>'
+	var elem = $('<li><div class="collapsible-header" onclick="selectDataFolder(&apos;' + id +'&apos;, &apos;' + title +'&apos;)"><i class="material-icons">' + (defaultIcons[title] || 'folder_item') + '</i>'
 	         + title + '</div><div class="collapsible-body"><div class="row"><div class="col s12 m12">'
 					 + '<ul id="' + id + '" class="collapsible" data-collapsible="accordion"></ul>'
 					 + '<div class="input-field col s6" style="margin:0;"><input id="input_' + id +'" type="text" class="validate" style="height: 2.5rem;"><label for="name">Subfolder name</label></div>'
@@ -273,6 +286,11 @@ window.addUser = function(parentId) {
 	console.log("Adding: " + address + " to: " + parentId);
 
 	addUserElement(parentId, address);
+};
+
+window.selectDataFolder = function(id, title) {
+	console.log("Select: " + id + title);
+	$("#currentFolder").val(title);
 };
 
 

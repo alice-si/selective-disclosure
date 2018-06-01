@@ -5,6 +5,7 @@ import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 contract UsersDirectory is Ownable {
 
     event AddedElement(address user, bytes32 parentId, string fullName);
+    event AddedUser(address admin, bytes32 parentId, address user);
 
     struct Element {
         bytes32 parentId;
@@ -48,6 +49,7 @@ contract UsersDirectory is Ownable {
 
     function addUser(bytes32 elementId, address user) public onlyOwner {
         elements[elementId].users.push(user);
+        emit AddedUser(msg.sender, elementId, user);
     }
 
     function getUsersCount(bytes32 elementId) public view returns(uint256) {

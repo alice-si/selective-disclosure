@@ -24,44 +24,104 @@
     </div>
 </nav>
 
-<div class="container">
-    <h3 class="header">Data directory</h3>
+<div class="container" style="width: 100%;">
+    <div class="row">
+        <div class="col s8">
+            <h3 class="header">Data directory</h3>
 
-    <ul id="root" class="collapsible">
-        <!--<li>-->
-            <!--<div class="collapsible-header"><i class="material-icons">check_circle</i>Validations</div>-->
-            <!--<div class="collapsible-body">-->
+            <ul id="root" class="collapsible">
+                <!--<li>-->
+                <!--<div class="collapsible-header"><i class="material-icons">check_circle</i>Validations</div>-->
+                <!--<div class="collapsible-body">-->
                 <!--<div class="row">-->
-                    <!--<div class="col s12 m12">-->
-                        <!--<ul id="validations" class="collapsible" data-collapsible="accordion">-->
-                            <!--<li>-->
-                                <!--<div class="collapsible-header">-->
-                                    <!--<i class="material-icons">folder-open</i>St Mungos</div>-->
-                                <!--<div class="collapsible-body">-->
-                                    <!--<p>Lorem ipsum dolor sit amet.</p>-->
-                                <!--</div>-->
-                            <!--</li>-->
-                            <!--<li>-->
-                                <!--<div class="collapsible-header">-->
-                                    <!--<i class="material-icons">folder-open</i>Fusion Housing</div>-->
-                                <!--<div class="collapsible-body">-->
-                                    <!--<p>Lorem ipsum dolor sit amet.</p>-->
-                                <!--</div>-->
-                            <!--</li>-->
-                        <!--</ul>-->
-                    <!--</div>-->
+                <!--<div class="col s12 m12">-->
+                <!--<ul id="validations" class="collapsible" data-collapsible="accordion">-->
+                <!--<li>-->
+                <!--<div class="collapsible-header">-->
+                <!--<i class="material-icons">folder-open</i>St Mungos</div>-->
+                <!--<div class="collapsible-body">-->
+                <!--<p>Lorem ipsum dolor sit amet.</p>-->
                 <!--</div>-->
-            <!--</div>-->
-        <!--</li>-->
-        <!--<li>-->
-            <!--<div class="collapsible-header"><i class="material-icons">money</i>Donations</div>-->
-            <!--<div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>-->
-        <!--</li>-->
-        <!--<li>-->
-            <!--<div class="collapsible-header"><i class="material-icons">thumb_up</i>Outcomes</div>-->
-            <!--<div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>-->
-        <!--</li>-->
-    </ul>
+                <!--</li>-->
+                <!--<li>-->
+                <!--<div class="collapsible-header">-->
+                <!--<i class="material-icons">folder-open</i>Fusion Housing</div>-->
+                <!--<div class="collapsible-body">-->
+                <!--<p>Lorem ipsum dolor sit amet.</p>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<div class="collapsible-header"><i class="material-icons">money</i>Donations</div>-->
+                <!--<div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<div class="collapsible-header"><i class="material-icons">thumb_up</i>Outcomes</div>-->
+                <!--<div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>-->
+                <!--</li>-->
+            </ul>
+        </div>
+        <div class="col s4">
+            <h3 class="header">Data access</h3>
+
+
+            <div class="card">
+
+                <div class="card-content">
+                    <p>Grant access to:</p>
+                    <div class="input-field col s12" style="padding: 0; margin-top: 0;">
+                        <input id="currentFolder" type="text" class="validate" placeholder="Please select a data folder" style="color: #1998a2">
+                    </div>
+                    <p>For the user group:</p>
+                    <div class="input-field col s12" style="padding: 0; margin-top: 0;">
+                        <select>
+                            <option value="" disabled selected>Choose the user group</option>
+                            <option value="1">Project Managers</option>
+                            <option value="2">Judges</option>
+                            <option value="3">Donors</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field col s12">
+
+                    </div>
+
+                    <p>With the following privileges:</p>
+
+                    <div class="switch" style="margin-bottom: 10px; margin-top: 20px;">
+                        <label>
+                            <input type="checkbox">
+                            <span class="lever"></span>
+                            Read
+                        </label>
+                    </div>
+                    <div class="switch" style="margin-bottom: 10px;">
+                        <label>
+                            <input type="checkbox">
+                            <span class="lever"></span>
+                            Write
+                        </label>
+                    </div>
+                    <div class="switch" style="margin-bottom: 10px;">
+                        <label>
+                            <input type="checkbox">
+                            <span class="lever"></span>
+                            Admin
+                        </label>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <a href="#">Grant access</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
 </div>
 
 
