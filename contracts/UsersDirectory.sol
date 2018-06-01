@@ -46,4 +46,16 @@ contract UsersDirectory is Ownable {
         return elements[elementId].children[index];
     }
 
+    function addUser(bytes32 elementId, address user) public onlyOwner {
+        elements[elementId].users.push(user);
+    }
+
+    function getUsersCount(bytes32 elementId) public view returns(uint256) {
+        return elements[elementId].users.length;
+    }
+
+    function getUserAt(bytes32 elementId, uint256 index) public view returns(address) {
+        return elements[elementId].users[index];
+    }
+
 }
