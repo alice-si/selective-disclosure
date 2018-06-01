@@ -60,6 +60,13 @@ async function addDataElement(parentId, fullName) {
 	listenToEvents();
 };
 
+async function addUserElement(parentId, address) {
+	console.log("Adding user: " + address + " to parent: " + parentId);
+	await usersDirectory.addUser(parentId, address, {from: mainAccount, gas: 2000000});
+	addDirectoryElement(parentId, address);
+	listenToEvents();
+};
+
 
 async function fetchDirectory(contract, displayFunc, elementId, parentId) {
 	if (parentId) {
@@ -70,6 +77,25 @@ async function fetchDirectory(contract, displayFunc, elementId, parentId) {
 	for(var i=0; i<childCount.valueOf(); i++) {
 		var childId = await contract.getChildIdAt(elementId, i);
 		fetchDirectory(contract, displayFunc, childId, elementId);
+	}
+}
+
+
+
+async function fetchUsersDirectory(elementId, parentId) {
+	if (parentId) {
+		var fullName = await usersDirectory.getFullName(elementId);
+		addUserDirectoryFolder(parentId, fullName, elementId);
+	}
+	var childCount = await usersDirectory.getChildrenCount(elementId);
+	for(var i=0; i<childCount.valueOf(); i++) {
+		var childId = await usersDirectory.getChildIdAt(elementId, i);
+		fetchUsersDirectory(childId, elementId);
+	}
+	var usersCount = await usersDirectory.getUsersCount(elementId);
+	for(var i=0; i<usersCount.valueOf(); i++) {
+		var address = await usersDirectory.getUserAt(elementId, i);
+		addDirectoryElement(elementId, address);
 	}
 }
 
@@ -97,7 +123,7 @@ async function getUsersDirectory() {
 	} else {
 		await deployUsersDirectory();
 	}
-	await fetchDirectory(usersDirectory, addUserDirectoryFolder, "root-users");
+	await fetchUsersDirectory("root-users");
 
 	//listenToEvents();
 }
@@ -161,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 window.addDirectoryElement = function(parentId, title, body) {
 	var parent = $('#' + parentId);
-	var elem = $('<li><div class="collapsible-header"><i class="material-icons">description</i>'
+	var elem = $('<li><div class="collapsible-header"><i class="material-icons" style="color: #1998a2;">person</i>'
            + title + '</div><div class="collapsible-body"><p>'
            + body + '</p></div></li>');
 	parent.append(elem);
@@ -184,6 +210,13 @@ window.addDataDirectoryFolder = function(parentId, title, id) {
 		       + '</div></div>');
 	parent.append(elem);
 	rebuildCollapsible();
+};
+
+window.addUserView = function(parentId, address) {
+	var parent = $('#users_' + parentId);
+	console.log(parent);
+	var elem = $('<div><i class="material-icons">person</i>' + address + '</div>');
+	parent.prepend(elem);
 };
 
 window.addUserDirectoryFolder = function(parentId, title, id) {
@@ -227,6 +260,7 @@ window.redeploy = function() {
 window.addElement = function(parentId) {
 	var elem = $("#input_" + parentId);
 	var fullName = elem.val();
+	$("#input_" + parentId).val("");
 	console.log(fullName);
 
 	addDataElement(parentId, fullName);
@@ -235,7 +269,7 @@ window.addElement = function(parentId) {
 window.addUser = function(parentId) {
 	var elem = $("#input_" + parentId);
 	var address = elem.val();
-	$("#input_" + parentId)
+	$("#input_" + parentId).val("");
 	console.log("Adding: " + address + " to: " + parentId);
 
 	addUserElement(parentId, address);
