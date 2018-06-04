@@ -8,14 +8,17 @@ import { default as contract } from 'truffle-contract'
 // Import our contract artifacts and turn them into usable abstractions.
 import dataDirectory_artifacts from '../build/contracts/DataDirectory.json';
 import usersDirectory_artifacts from '../build/contracts/UsersDirectory.json';
+import dataAccess_artifacts from '../build/contracts/DataAccess.json';
 
 // Create contract object
 var DataDirectory = contract(dataDirectory_artifacts);
 var UsersDirectory = contract(usersDirectory_artifacts);
+var DataAccess = contract(dataAccess_artifacts);
 
 // Contract instance
 var dataDirectory;
 var usersDirectory;
+var dataAccess;
 
 
 //Accounts
@@ -25,8 +28,8 @@ var events;
 
 
 async function deployDataDirectory() {
-	console.log("Deploying data directory");
 	dataDirectory = await DataDirectory.new({from: mainAccount, gas: 2000000});
+	console.log("Deployed data directory: " + dataDirectory.address);
 	localStorage.setItem('dataDirectoryAddress', dataDirectory.address);
 	await dataDirectory.addElement("root", "Validations", true, {from: mainAccount, gas: 2000000});
 	await dataDirectory.addElement("root", "Donations", true, {from: mainAccount, gas: 2000000});
@@ -39,17 +42,18 @@ async function deployDataDirectory() {
 }
 
 async function deployUsersDirectory() {
-	console.log("Deploying users directory");
 	usersDirectory = await UsersDirectory.new({from: mainAccount, gas: 2000000});
+	console.log("Deployed users directory: " + usersDirectory.address);
 	localStorage.setItem('usersDirectoryAddress', usersDirectory.address);
 	await usersDirectory.addElement("root-users", "Project Managers", {from: mainAccount, gas: 2000000});
 	await usersDirectory.addElement("root-users", "Judges", {from: mainAccount, gas: 2000000});
 	await usersDirectory.addElement("root-users", "Donors", {from: mainAccount, gas: 2000000});
+}
 
-	//var donationsId = await dataDirectory.getElementId("root", "Validations");
-
-	//await dataDirectory.addElement(donationsId, "St. Mungos", true, {from: mainAccount, gas: 2000000});
-	//await dataDirectory.addElement(donationsId, "Fusion Housing", true, {from: mainAccount, gas: 2000000});
+async function deployDataAccess() {
+	dataAccess = await UsersDirectory.new({from: mainAccount, gas: 2000000});
+	console.log("Deployed dataAccess: " + dataAccess.address);
+	localStorage.setItem('dataAccessAddress', dataAccess.address);
 }
 
 async function addDataElement(parentId, fullName) {
@@ -268,6 +272,7 @@ window.drawDataDirectory = function() {
 window.redeploy = function() {
 	deployDataDirectory();
 	deployUsersDirectory();
+	deployDataAccess();
 };
 
 window.addElement = function(parentId) {
