@@ -78,11 +78,8 @@
                     </div>
                     <p>For the user group:</p>
                     <div class="input-field col s12" style="padding: 0; margin-top: 0;">
-                        <select>
+                        <select id="selectedGroup">
                             <option value="" disabled selected>Choose the user group</option>
-                            <option value="1">Project Managers</option>
-                            <option value="2">Judges</option>
-                            <option value="3">Donors</option>
                         </select>
                     </div>
 
@@ -94,28 +91,28 @@
 
                     <div class="switch" style="margin-bottom: 10px; margin-top: 20px;">
                         <label>
-                            <input type="checkbox">
+                            <input id="readAccess" type="checkbox">
                             <span class="lever"></span>
                             Read
                         </label>
                     </div>
                     <div class="switch" style="margin-bottom: 10px;">
                         <label>
-                            <input type="checkbox">
+                            <input id="writeAccess" type="checkbox">
                             <span class="lever"></span>
                             Write
                         </label>
                     </div>
                     <div class="switch" style="margin-bottom: 10px;">
                         <label>
-                            <input type="checkbox">
+                            <input id="adminAccess" type="checkbox">
                             <span class="lever"></span>
                             Admin
                         </label>
                     </div>
                 </div>
                 <div class="card-action">
-                    <a href="#">Grant access</a>
+                    <a href="#" onclick="grantAccess()">Grant access</a>
                 </div>
             </div>
 
