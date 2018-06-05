@@ -52,4 +52,12 @@ contract DataDirectory is Ownable {
         return elements[elementId].children[index];
     }
 
+    function getParentId(bytes32 elementId) public view returns(bytes32) {
+        return elements[elementId].parentId;
+    }
+
+    function hasParent(bytes32 elementId) public view returns(bool) {
+        return getParentId(elementId) != 0x1;
+    }
+
 }
