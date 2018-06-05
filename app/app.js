@@ -329,6 +329,12 @@ window.addUser = function(parentId) {
 	addUserElement(parentId, address);
 };
 
+var selectAccesses = function(accesses) {
+	$('#readAccess').prop('checked', accesses[0]);
+	$('#writeAccess').prop('checked', accesses[1]);
+	$('#adminAccess').prop('checked', accesses[2]);
+};
+
 window.selectDataFolder = function(id, title) {
 	console.log("Select: " + id + title);
 	$("#currentFolder").val(title);
@@ -338,9 +344,17 @@ window.selectDataFolder = function(id, title) {
 	M.FormSelect.init($("#selectedGroup"));
 
 	//Clear access
-	$('#readAccess').prop('checked', false);
-	$('#writeAccess').prop('checked', false);
-	$('#adminAccess').prop('checked', false);
+	selectAccesses([false, false, false]);
+};
+
+window.onGroupChange = function() {
+	var folder = $("#currentFolder").val();
+	var group = $('#selectedGroup').find(":selected").val();
+	if (folder && group) {
+		dataAccess.checkAccess(folder, group).then(function(result) {
+			selectAccesses(result);
+		})
+	}
 };
 
 window.grantAccess = function() {
