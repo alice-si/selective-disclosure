@@ -60,4 +60,11 @@ contract('Data Access', function([owner]) {
 		(access).should.be.deep.equal([true, true, false]);
 	});
 
+
+	it("should return empty access for not existing entry", async function() {
+		var access = await dataAccess.checkAccess("void", "unknown");
+
+		(access).should.be.deep.equal([false, false, false]);
+	});
+
 });

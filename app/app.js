@@ -23,7 +23,7 @@ var dataAccess;
 
 //Accounts
 var mainAccount;
-
+var selectedFolderId;
 var events;
 
 
@@ -51,7 +51,7 @@ async function deployUsersDirectory() {
 }
 
 async function deployDataAccess() {
-	dataAccess = await DataAccess.new({from: mainAccount, gas: 2000000});
+	dataAccess = await DataAccess.new(dataDirectory.address, {from: mainAccount, gas: 2000000});
 	console.log("Deployed dataAccess: " + dataAccess.address);
 	localStorage.setItem('dataAccessAddress', dataAccess.address);
 }
@@ -73,7 +73,10 @@ async function addUserElement(parentId, address) {
 
 async function grantAccess(folder, group, read, write, admin) {
 	await dataAccess.changeAccess(folder, group, read, write, admin, {from: mainAccount, gas: 2000000});
-	M.toast({html: "Access granted for: " + folder + " to: " + group + " [ read: " + read + " write: " + write + " admin: " + admin + " ]"})
+
+	var folderName = $("#currentFolder").val();
+	var groupName = $('#selectedGroup').find(":selected").text();
+	M.toast({html: "Access granted for: " + folderName + " to: " + groupName + " [ read: " + read + " write: " + write + " admin: " + admin + " ]"})
 }
 
 
@@ -111,7 +114,6 @@ async function fetchUsersDirectory(elementId, parentId) {
 
 
 async function getDataDirectory() {
-	DataDirectory.setProvider(web3.currentProvider);
 	var address = localStorage.getItem('dataDirectoryAddress');
 	if (address) {
 		dataDirectory = await DataDirectory.at(address);
@@ -123,7 +125,6 @@ async function getDataDirectory() {
 
 
 async function getDataAccess() {
-	DataAccess.setProvider(web3.currentProvider);
 	var address = localStorage.getItem('dataAccessAddress');
 	if (address) {
 		dataAccess = await DataAccess.at(address);
@@ -133,16 +134,15 @@ async function getDataAccess() {
 }
 
 async function getContracts() {
-	await getDataAccess();
 	await getUsersDirectory();
 	await getDataDirectory();
+	await getDataAccess();
 
 	listenToEvents();
 }
 
 
 async function getUsersDirectory() {
-	UsersDirectory.setProvider(web3.currentProvider);
 	var address = localStorage.getItem('usersDirectoryAddress');
 	if (address) {
 		usersDirectory = await UsersDirectory.at(address);
@@ -178,7 +178,6 @@ function listenToEvents() {
 	});
 
 	dataAccess.AccessChanged({}, {fromBlock:1, toBlock:'latest'}).get(function(error, results) {
-		console.log(results);
 		results.forEach(function(result) {
 			var event = {
 				block: result.blockNumber,
@@ -214,6 +213,10 @@ window.onload = function() {
 
       mainAccount = accs[0];
 		  console.log("Main account: " + mainAccount);
+
+			UsersDirectory.setProvider(web3.currentProvider);
+			DataDirectory.setProvider(web3.currentProvider);
+			DataAccess.setProvider(web3.currentProvider);
 
 			getContracts();
 
@@ -291,7 +294,6 @@ window.addUserDirectoryFolder = function(parentId, title, id) {
 };
 
 function displayEvent(event) {
-	console.log("Displaying: " + event);
 	var shortTx = event.tx.substr(0, 20) + '...';
 	var elem = $('<tr><td>' + event.block + '</td><td>' + shortTx + '</td><td>' + event.desc + '</td></tr>');
 	$('#logs-table').prepend(elem);
@@ -305,17 +307,20 @@ window.drawDataDirectory = function() {
 	addDirectoryFolder("root", "Outcomes", "a3");
 };
 
+var redeployAll = async function() {
+	await deployDataDirectory();
+	await deployUsersDirectory();
+	await deployDataAccess();
+};
+
 window.redeploy = function() {
-	deployDataDirectory();
-	deployUsersDirectory();
-	deployDataAccess();
+	redeployAll();
 };
 
 window.addElement = function(parentId) {
 	var elem = $("#input_" + parentId);
 	var fullName = elem.val();
 	$("#input_" + parentId).val("");
-	console.log(fullName);
 
 	addDataElement(parentId, fullName);
 };
@@ -338,6 +343,7 @@ var selectAccesses = function(accesses) {
 window.selectDataFolder = function(id, title) {
 	console.log("Select: " + id + title);
 	$("#currentFolder").val(title);
+	selectedFolderId = id;
 
 	//Clear selected group
 	$("#selectedGroup").val(0);
@@ -348,22 +354,27 @@ window.selectDataFolder = function(id, title) {
 };
 
 window.onGroupChange = function() {
-	var folder = $("#currentFolder").val();
 	var group = $('#selectedGroup').find(":selected").val();
-	if (folder && group) {
-		dataAccess.checkAccess(folder, group).then(function(result) {
+	if (selectedFolderId && group) {
+		console.log("Checking access folder: " + selectedFolderId + " group: " + group);
+		dataAccess.recursivelyCheckAccess(selectedFolderId, group).then(function(result) {
 			selectAccesses(result);
 		})
 	}
 };
 
 window.grantAccess = function() {
-  var folder = $("#currentFolder").val();
   var group = $('#selectedGroup').find(":selected").val();
   var read = $('#readAccess:checked').val() == 'on';
   var write = $('#writeAccess:checked').val() == 'on';
   var admin = $('#adminAccess:checked').val() == 'on';
-	grantAccess(folder, group, read, write, admin);
+	grantAccess(selectedFolderId, group, read, write, admin);
+};
+
+window.test = function() {
+	dataAccess.recursivelyCheckAccess("0x05237c2519d43143913bf2b644b340a62e638dc4920d82a0b73239aec0f5668a", "Judges").then(function(result) {
+		console.log(result);
+	})
 };
 
 
