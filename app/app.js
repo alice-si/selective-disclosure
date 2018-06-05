@@ -178,6 +178,7 @@ function listenToEvents() {
 	});
 
 	dataAccess.AccessChanged({}, {fromBlock:1, toBlock:'latest'}).get(function(error, results) {
+		console.log(results);
 		results.forEach(function(result) {
 			var event = {
 				block: result.blockNumber,
@@ -186,7 +187,7 @@ function listenToEvents() {
 				+ " has been given <br/> [ read: " + result.args.read
 				+ ", write: " + result.args.write
 				+ ", admin: " + result.args.admin
-				+ " ] access to the folder: " + result.args.directory
+				+ " ] access to the folder: " + result.args.folder
 			};
 			displayEvent(event);
 		});
