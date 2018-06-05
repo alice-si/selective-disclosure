@@ -332,6 +332,15 @@ window.addUser = function(parentId) {
 window.selectDataFolder = function(id, title) {
 	console.log("Select: " + id + title);
 	$("#currentFolder").val(title);
+
+	//Clear selected group
+	$("#selectedGroup").val(0);
+	M.FormSelect.init($("#selectedGroup"));
+
+	//Clear access
+	$('#readAccess').prop('checked', false);
+	$('#writeAccess').prop('checked', false);
+	$('#adminAccess').prop('checked', false);
 };
 
 window.grantAccess = function() {
@@ -343,9 +352,5 @@ window.grantAccess = function() {
 	grantAccess(folder, group, read, write, admin);
 };
 
-window.test = function() {
-	dataAccess.changeAccess("directory", "group", false, false, false, {from: mainAccount, gas: 2000000});
-	console.log(dataAccess);
-};
 
 
