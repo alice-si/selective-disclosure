@@ -9,6 +9,7 @@ import { default as contract } from 'truffle-contract'
 import dataDirectory_artifacts from '../build/contracts/DataDirectory.json';
 import usersDirectory_artifacts from '../build/contracts/UsersDirectory.json';
 import dataAccess_artifacts from '../build/contracts/DataAccess.json';
+import kovan_deployment from './kovan-deployment.json';
 
 // Create contract object
 var DataDirectory = contract(dataDirectory_artifacts);
@@ -25,6 +26,11 @@ var dataAccess;
 var mainAccount;
 var selectedFolderId;
 var events;
+
+
+function getContractAddress(name) {
+	return kovan_deployment[name];
+}
 
 
 async function deployDataDirectory() {
@@ -119,7 +125,7 @@ async function fetchUsersDirectory(elementId, parentId) {
 
 
 async function getDataDirectory() {
-	var address = localStorage.getItem('dataDirectoryAddress');
+	var address = getContractAddress('dataDirectoryAddress');
 	if (address) {
 		dataDirectory = await DataDirectory.at(address);
 	} else {
@@ -130,7 +136,7 @@ async function getDataDirectory() {
 
 
 async function getDataAccess() {
-	var address = localStorage.getItem('dataAccessAddress');
+	var address = getContractAddress('dataAccessAddress');
 	if (address) {
 		dataAccess = await DataAccess.at(address);
 	} else {
@@ -148,7 +154,7 @@ async function getContracts() {
 
 
 async function getUsersDirectory() {
-	var address = localStorage.getItem('usersDirectoryAddress');
+	var address = getContractAddress('usersDirectoryAddress');
 	if (address) {
 		usersDirectory = await UsersDirectory.at(address);
 	} else {
