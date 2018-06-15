@@ -58,7 +58,9 @@ async function deployDataAccess() {
 
 async function addDataElement(parentId, fullName) {
 	console.log("Adding: " + fullName + " to parent: " + parentId);
+	$.busyLoadFull("show");
 	await dataDirectory.addElement(parentId, fullName, true, {from: mainAccount, gas: 2000000});
+	$.busyLoadFull("hide");
 	var elementId = await dataDirectory.getElementId(parentId, fullName);
 	addDataDirectoryFolder(parentId, fullName, elementId);
 	listenToEvents();
@@ -66,14 +68,17 @@ async function addDataElement(parentId, fullName) {
 
 async function addUserElement(parentId, address) {
 	console.log("Adding user: " + address + " to parent: " + parentId);
+	$.busyLoadFull("show");
 	await usersDirectory.addUser(parentId, address, {from: mainAccount, gas: 2000000});
+	$.busyLoadFull("hide");
 	addDirectoryElement(parentId, address);
 	listenToEvents();
 };
 
 async function grantAccess(folder, group, read, write, admin) {
+	$.busyLoadFull("show");
 	await dataAccess.changeAccess(folder, group, read, write, admin, {from: mainAccount, gas: 2000000});
-
+	$.busyLoadFull("hide");
 	var folderName = $("#currentFolder").val();
 	var groupName = $('#selectedGroup').find(":selected").text();
 	M.toast({html: "Access granted for: " + folderName + " to: " + groupName + " [ read: " + read + " write: " + write + " admin: " + admin + " ]"})
@@ -195,11 +200,15 @@ function listenToEvents() {
 }
 
 window.onload = function() {
-
-	window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
+	$.busyLoadSetup({ animation: "fade", background: "rgba(25,152,162, 0.8)", text: "Processing the transaction..." });
 
 
+	//window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+	if (!window.web3) {
+		M.toast({html: "Please install metamask to connect to the Ethereum Kovan network."})
+	} else {
+		console.log(window.web3);
+	}
 
 	web3.eth.getAccounts(function(err, accs) {
       if (err != null) {

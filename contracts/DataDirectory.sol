@@ -26,7 +26,7 @@ contract DataDirectory is Ownable {
         return keccak256(fullName);
     }
 
-    function addElement(bytes32 parentId, string fullName, bool isFolder) public onlyOwner {
+    function addElement(bytes32 parentId, string fullName, bool isFolder) public {
         bytes32 id = this.getElementId(parentId, fullName);
         require(elements[id].parentId == 0);
         elements[id].parentId = parentId;

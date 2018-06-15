@@ -26,7 +26,7 @@ contract UsersDirectory is Ownable {
         return keccak256(fullName);
     }
 
-    function addElement(bytes32 parentId, string fullName) public onlyOwner {
+    function addElement(bytes32 parentId, string fullName) public {
         bytes32 id = this.getElementId(parentId, fullName);
         require(elements[id].parentId == 0);
         elements[id].parentId = parentId;
@@ -47,7 +47,7 @@ contract UsersDirectory is Ownable {
         return elements[elementId].children[index];
     }
 
-    function addUser(bytes32 elementId, address user) public onlyOwner {
+    function addUser(bytes32 elementId, address user) public {
         elements[elementId].users.push(user);
         emit AddedUser(msg.sender, elementId, user);
     }

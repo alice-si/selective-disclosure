@@ -25,7 +25,7 @@ contract DataAccess is Ownable {
     mapping (bytes32 => mapping(bytes32 => Access)) public rights;
     uint256 count;
 
-    function changeAccess(bytes32 folder, bytes32 group, bool read, bool write, bool admin) public onlyOwner {
+    function changeAccess(bytes32 folder, bytes32 group, bool read, bool write, bool admin) public {
         rights[folder][group] = Access(read, write, admin, now, 0);
         emit AccessChanged(folder, group,read, write, admin, now, 0);
     }
