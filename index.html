@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Selective disclosure</title>
+    <link rel="shortcut icon" type="image/png" href="https://s3.eu-west-2.amazonaws.com/alice-res/favicon.ico"/>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+</head>
+<body>
+
+<nav>
+    <div class="nav-wrapper alice">
+        <a href="#" class="brand-logo" style="padding-left: 10px;">Alice {Selective Disclosure}</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="index.html">Data</a></li>
+            <li><a href="users.html">Users</a></li>
+            <li><a href="logs.html">Logs</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+
+<div class="container" style="width: 100%;">
+    <div class="row">
+        <div class="col s8">
+            <h3 class="header">Data directory</h3>
+
+            <ul id="root" class="collapsible">
+                <!--<li>-->
+                <!--<div class="collapsible-header"><i class="material-icons">check_circle</i>Validations</div>-->
+                <!--<div class="collapsible-body">-->
+                <!--<div class="row">-->
+                <!--<div class="col s12 m12">-->
+                <!--<ul id="validations" class="collapsible" data-collapsible="accordion">-->
+                <!--<li>-->
+                <!--<div class="collapsible-header">-->
+                <!--<i class="material-icons">folder-open</i>St Mungos</div>-->
+                <!--<div class="collapsible-body">-->
+                <!--<p>Lorem ipsum dolor sit amet.</p>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<div class="collapsible-header">-->
+                <!--<i class="material-icons">folder-open</i>Fusion Housing</div>-->
+                <!--<div class="collapsible-body">-->
+                <!--<p>Lorem ipsum dolor sit amet.</p>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<div class="collapsible-header"><i class="material-icons">money</i>Donations</div>-->
+                <!--<div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<div class="collapsible-header"><i class="material-icons">thumb_up</i>Outcomes</div>-->
+                <!--<div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>-->
+                <!--</li>-->
+            </ul>
+        </div>
+        <div class="col s4">
+            <h3 class="header">Data access</h3>
+
+
+            <div class="card">
+
+                <div class="card-content">
+                    <p>Grant access to:</p>
+                    <div class="input-field col s12" style="padding: 0; margin-top: 0;">
+                        <input id="currentFolder" type="text" class="validate" placeholder="Please select a data folder" style="color: #1998a2">
+                    </div>
+                    <p>For the user group:</p>
+                    <div class="input-field col s12" style="padding: 0; margin-top: 0;">
+                        <select id="selectedGroup" onchange="onGroupChange()">
+                            <option id="groupPrompt" value="0" selected>Choose the user group</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field col s12">
+
+                    </div>
+
+                    <p>With the following privileges:</p>
+
+                    <div class="switch" style="margin-bottom: 10px; margin-top: 20px;">
+                        <label>
+                            <input id="readAccess" type="checkbox">
+                            <span class="lever"></span>
+                            Read
+                        </label>
+                    </div>
+                    <div class="switch" style="margin-bottom: 10px;">
+                        <label>
+                            <input id="writeAccess" type="checkbox">
+                            <span class="lever"></span>
+                            Write
+                        </label>
+                    </div>
+                    <div class="switch" style="margin-bottom: 10px;">
+                        <label>
+                            <input id="adminAccess" type="checkbox">
+                            <span class="lever"></span>
+                            Admin
+                        </label>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <a href="#" onclick="grantAccess()">Grant access</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
+<script src="./app.js"></script>
+
+</body>
+</html>
